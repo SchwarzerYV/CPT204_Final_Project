@@ -1,13 +1,10 @@
-/* Skeleton code copyright (C) 2008, 2022 Paul N. Hilfinger and the
- * Regents of the University of California.  Do not distribute this or any
- * derivative work without permission. */
 
 package ataxx;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-import static ataxx.PieceColor.*;
+
+
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 
@@ -27,9 +24,8 @@ class AIPlayer extends Player {
     /** A new AI for GAME that will play MYCOLOR. SEED is used to initialize
      *  a random-number generator for use in move computations.  Identical
      *  seeds produce identical behaviour. */
-    AIPlayer(Game game, PieceColor myColor, long seed) {
+    AIPlayer(Game game, PieceState myColor, long seed) {
         super(game, myColor);
-        _random = new Random(seed);
     }
 
     @Override
@@ -44,22 +40,30 @@ class AIPlayer extends Player {
         return move.toString();
     }
 
-    /** Return a move for me from the current position, assuming there
-     *  is a move. */
+
     private Move findMove() {
         Board b = new Board(getAtaxxBoard());
-        _lastFoundMove = null;
-        if (myColor() == RED) {
+        lastFoundMove = null;
+         // Here we just have the simple AI to randomly move.
+        // However, it does not meet with the requirements of Part A.2.
+        // Therefore, the following codes should be modified
+        // in order to meet with the requirements of Part A.2.
+        // You can create add your own method and put your method here.
+        if (getMyState() ==PieceState.RED) {
             minMax(b, MAX_DEPTH, true, 1, -INFTY, INFTY);
         } else {
             minMax(b, MAX_DEPTH, true, -1, -INFTY, INFTY);
         }
-        return _lastFoundMove;
+        // Please do not change the codes below
+        if (lastFoundMove == null) {
+            lastFoundMove = Move.pass();
+        }
+        return lastFoundMove;
     }
 
-    /** The move found by the last call to the findMove method
-     *  above. */
-    private Move _lastFoundMove;
+     /** The move found by the last call to the findMove method above. */
+     private Move lastFoundMove;
+
 
     /** Find a move from position BOARD and return its value, recording
      *  the move found in _foundMove iff SAVEMOVE. The move
@@ -85,7 +89,7 @@ class AIPlayer extends Player {
                 allPossibleMoves.add(Move.pass());
             } else {
                 bestScore = -INFTY;
-                allPossibleMoves = possibleSteps(PieceState.RED, board);
+                allPossibleMoves = possibleMoves(board,PieceState.RED);
                 for (Move possible : allPossibleMoves) {
                     Board copy = new Board(board);
                     copy.createMove(possible);
@@ -106,7 +110,7 @@ class AIPlayer extends Player {
                 allPossibleMoves.add(Move.pass());
             } else {
                 bestScore = INFTY;
-                allPossibleMoves = possibleSteps(PieceState.BLUE, board);
+                allPossibleMoves = possibleMoves(board,PieceState.BLUE);
                 for (Move possible : allPossibleMoves) {
                     Board copy = new Board(board);
                     copy.createMove(possible);
@@ -124,7 +128,7 @@ class AIPlayer extends Player {
             }
         }
         if (saveMove) {
-            _lastFoundMove = best;
+            lastFoundMove = best;
         }
         return bestScore;
     }
@@ -140,35 +144,51 @@ class AIPlayer extends Player {
             default -> 0;
             };
         }
-        if (board.whoseMove() == RED) {
-            return board.redPieces() - board.bluePieces();
+        if (board.nextMove() == PieceState.RED) {
+            return  board.getColorNums(PieceState.RED)- board.getColorNums(PieceState.BLUE);
         } else {
-            return board.bluePieces() - board.redPieces();
+            return board.getColorNums(PieceState.BLUE) - board.getColorNums(PieceState.RED);
         }
     }
 
-    /** Pseudo-random number generator for move computation. */
-    private Random _random = new Random();
+   /** Return all possible moves for a color.
+     * @param board the current board.
+     * @param myColor the specified color.
+     * @return an ArrayList of all possible moves for the specified color. */
+    private ArrayList<Move> possibleMoves(Board board, PieceState myColor) {
+        ArrayList<Move> possibleMoves = new ArrayList<>();
+        for (char row = '7'; row >= '1'; row--) {
+            for (char col = 'a'; col <= 'g'; col++) {
+                int index = Board.index(col, row);
+                if (board.getContent(index) == myColor) {
+                    ArrayList<Move> addMoves
+                            = assistPossibleMoves(board, row, col);
+                    possibleMoves.addAll(addMoves);
+                }
+            }
+        }
+        return possibleMoves;
+    }
 
-    private ArrayList<Move> possibleSteps(PieceColor whoseMove, Board board) {
-        ArrayList<Move> result = new ArrayList<>();
-        for (int c = 2; c < Board.SIDE + 2; c++) {
-            for (int r = 2; r < Board.SIDE + 2; r++) {
-                char col0 = (char) (c + 'a' - 2);
-                char row0 = (char) (r + '1' - 2);
-                if (board.get(col0, row0) == whoseMove) {
-                    for (int dc = -2; dc <= 2; dc++) {
-                        for (int dr = -2; dr <= 2; dr++) {
-                            char col1 = (char) (c + dc + 'a' - 2);
-                            char row1 = (char) (r + dr + '1' - 2);
-                            if (board.moveLegal(col0, row0, col1, row1)) {
-                                result.add(Move.move(col0, row0, col1, row1));
-                            }
-                        }
+    /** Returns an Arraylist of legal moves.
+     * @param board the board for testing
+     * @param row the row coordinate of the center
+     * @param col the col coordinate of the center */
+    private ArrayList<Move>
+        assistPossibleMoves(Board board, char row, char col) {
+        ArrayList<Move> assistPossibleMoves = new ArrayList<>();
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                if (i != 0 || j != 0) {
+                    char row2 = (char) (row + j);
+                    char col2 = (char) (col + i);
+                    Move currMove = Move.move(col, row, col2, row2);
+                    if (board.moveLegal(currMove)) {
+                        assistPossibleMoves.add(currMove);
                     }
                 }
             }
         }
-        return result;
+        return assistPossibleMoves;
     }
 }
