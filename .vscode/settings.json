@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "CPT204 2223 Final Project Skeleton Code, Library, Demo Video (1)/library/junit-4.12.jar"
+    ]
+}
