@@ -482,4 +482,14 @@ class Board {
 
     /** Number of consecutive non-cloning moves before getAtaxxGame ends. */
     static final int CONSEC_JUMP_LIMIT = 25;
+    
+	//For GUI
+	public PieceState get(int row, int col) {
+    	int index = row * DEEPER_ONESIDE + col;
+	if (row >= 0 && row < DEEPER_ONESIDE && col >= 0 && col < DEEPER_ONESIDE) {
+            return ataxxBoard[index];
+        } else {
+            throw new IllegalArgumentException("Invalid row or column index.");
+        }
+    }
 }
