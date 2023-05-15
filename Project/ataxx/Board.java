@@ -273,19 +273,15 @@ class Board {
         setContent(col, r, BLOCKED);
         setContent(c, r, BLOCKED);
         setContent(c, row, BLOCKED);
-<<<<<<< HEAD:CPT204 2223 Final Project Skeleton Code, Library, Demo Video (1)/ataxx/Board.java
-        if(col==c&&row==r){
-            unblockedNum--;
-        }else if((col==c&&row!=r)||(row==r&&col!=c)){
-            unblockedNum=unblockedNum-2;
-        }else{
-            unblockedNum=unblockedNum-4;
-        }
-        
-=======
-        unblockedNum--;
 
->>>>>>> 4118ea9619491bf275f6e5756ae453ca91f47a59:Project/ataxx/Board.java
+        if (col == c && row == r) {
+            unblockedNum--;
+        } else if ((col == c && row != r) || (row == r && col != c)) {
+            unblockedNum = unblockedNum - 2;
+        } else {
+            unblockedNum = unblockedNum - 4;
+        }
+
         // Please do not change the following codes
         if (!couldMove(RED) && !couldMove(BLUE)) {
             winner = EMPTY;
@@ -392,15 +388,12 @@ class Board {
                 winner = BLUE;
             }
         }
-<<<<<<< HEAD:CPT204 2223 Final Project Skeleton Code, Library, Demo Video (1)/ataxx/Board.java
-        if(getColorNums(RED)==getColorNums(BLUE)){
-            winner=EMPTY;
+
+        if (getColorNums(RED) == getColorNums(BLUE)) {
+            winner = EMPTY;
         }
-    }
-		// Please do not change the return statement below
-=======
         // Please do not change the return statement below
->>>>>>> 4118ea9619491bf275f6e5756ae453ca91f47a59:Project/ataxx/Board.java
+        // Please do not change the return statement below
         return winner;
     }
 
@@ -480,11 +473,7 @@ class Board {
 
         if (color == RED) {
             return red;
-<<<<<<< HEAD:CPT204 2223 Final Project Skeleton Code, Library, Demo Video (1)/ataxx/Board.java
-        }else {
-=======
         } else {
->>>>>>> 4118ea9619491bf275f6e5756ae453ca91f47a59:Project/ataxx/Board.java
             return blue;
         }
     }
