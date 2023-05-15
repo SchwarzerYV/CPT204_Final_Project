@@ -249,10 +249,14 @@ class Board {
         setContent(col, r,BLOCKED);
         setContent(c, r, BLOCKED);
         setContent(c, row, BLOCKED);
-        unblockedNum--;
-
-
-
+        if(col==c&&row==r){
+            unblockedNum--;
+        }else if((col==c&&row!=r)||(row==r&&col!=c)){
+            unblockedNum=unblockedNum-2;
+        }else{
+            unblockedNum=unblockedNum-4;
+        }
+        
         // Please do not change the following codes
         if (!couldMove(RED) && !couldMove(BLUE)) {
             winner = EMPTY;
@@ -353,6 +357,9 @@ class Board {
         }else{
             winner=BLUE;
         }
+        if(getColorNums(RED)==getColorNums(BLUE)){
+            winner=EMPTY;
+        }
     }
 		// Please do not change the return statement below
         return winner;
@@ -419,7 +426,7 @@ class Board {
         }
 		if(color==RED){
             return red;
-        }else{
+        }else {
             return blue;
         }
     }
