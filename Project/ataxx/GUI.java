@@ -1,5 +1,7 @@
 package ataxx;
 
+import javax.swing.*;
+import java.awt.*;
 // Optional Task: The GUI for the Ataxx Game
 
 class GUI implements View, CommandSource, Reporter {
@@ -20,7 +22,8 @@ class GUI implements View, CommandSource, Reporter {
 	
     @Override
     public void update(Board board) {
-
+        Game game = new Game(this, this, this);
+        game.runCommand("board_on");
     }
 
     @Override
