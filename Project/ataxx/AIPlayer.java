@@ -2,9 +2,6 @@
 package ataxx;
 
 import java.util.ArrayList;
-
-
-
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 
@@ -14,7 +11,7 @@ import static java.lang.Math.max;
 class AIPlayer extends Player {
 
     /** Maximum minimax search depth before going to static evaluation. */
-    private static final int MAX_DEPTH = 6;
+    private static final int MAX_DEPTH = 5;
     /** A position magnitude indicating a win (for red if positive, blue
      *  if negative). */
     private static final int WINNING_VALUE = Integer.MAX_VALUE - 20;

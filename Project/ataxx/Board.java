@@ -8,29 +8,26 @@ import java.util.function.Consumer;
 import static ataxx.PieceState.*;
 import static ataxx.GameException.error;
 
-/**
- * An Ataxx board.
+/** An Ataxx board.
  *
- * The squares are labeled by column (a char value between
- * 'a' - 2 and 'g' + 2) and row (a char value between '1' - 2 and '7'
- * + 2).
+ *  The squares are labeled by column (a char value between
+ *  'a' - 2 and 'g' + 2) and row (a char value between '1' - 2 and '7'
+ *  + 2).
  *
- * Values of the column outside 'a' and 'g' and of the row outside '1' to '7'
- * denote
- * two layers of border squares, which are always blocked.
+ *  Values of the column outside 'a' and 'g' and of the row outside '1' to '7' denote
+ *  two layers of border squares, which are always blocked.
  *
- * This artificial border (which is never actually printed) is a common
- * trick that allows one to avoid testing for edge conditions.
+ *  This artificial border (which is never actually printed) is a common
+ *  trick that allows one to avoid testing for edge conditions.
  *
- * For example, to look at all the possible moves from a square, sq,
- * on the normal board (i.e., not in the border region), one can simply
- * look at all squares within two rows and columns of sq without worrying
- * about going off the board. Since squares in the border region are
- * blocked, the normal logic that prevents moving to a blocked square
- * will apply.
+ *  For example, to look at all the possible moves from a square, sq,
+ *  on the normal board (i.e., not in the border region), one can simply
+ *  look at all squares within two rows and columns of sq without worrying
+ *  about going off the board. Since squares in the border region are
+ *  blocked, the normal logic that prevents moving to a blocked square
+ *  will apply.
  *
- * Moves on this board are denoted by Moves.
- */
+ *  Moves on this board are denoted by Moves.*/
 class Board {
 
     /** A new, cleared board in the initial configuration. */
@@ -40,10 +37,8 @@ class Board {
         clear();
     }
 
-    /**
-     * A board whose initial contents are copied from BOARD0,
-     * but whose notifier does nothing.
-     */
+    /** A board whose initial contents are copied from BOARD0,
+     *  but whose notifier does nothing. */
     Board(Board board0) {
         ataxxBoard = board0.ataxxBoard.clone();
         nextMove = board0.nextMove();
@@ -55,18 +50,14 @@ class Board {
         setNotifier(NOP);
     }
 
-    /**
-     * Return the linearized index of the square that is DC columns and DR
-     * rows away from the square with index SQ.
-     */
+    /** Return the linearized index of the square that is DC columns and DR
+     *  rows away from the square with index SQ. */
     static int getNeighbor(int sq, int dc, int dr) {
         return sq + dc + dr * DEEPER_ONESIDE;
     }
 
-    /**
-     * Clear me to my starting state, with pieces in their initial
-     * positions and no blocks.
-     */
+    /** Clear me to my starting state, with pieces in their initial
+     *  positions and no blocks. */
     void clear() {
         nextMove = RED;
         totalMoves = new ArrayList<>();
@@ -116,10 +107,8 @@ class Board {
         }
     }
 
-    /**
-     * Return true iff player WHO could move, ignoring whether it is
-     * that player's move and whether the getAtaxxGame is over.
-     */
+    /** Return true iff player WHO could move, ignoring whether it is
+     *  that player's move and whether the getAtaxxGame is over. */
     boolean couldMove(PieceState who) {
         for (char r = '7'; r >= '1'; r--) {
             for (char c = 'a'; c <= 'g'; c++) {
@@ -145,18 +134,14 @@ class Board {
         return false;
     }
 
-    /**
-     * Assuming MOVE has the format "-" or "C0R0-C1R1", make the denoted
-     * move ("-" means "pass").
-     */
+    /** Assuming MOVE has the format "-" or "C0R0-C1R1", make the denoted
+     *  move ("-" means "pass"). */
     void createMove(String move) {
         createMove(Move.move(move));
     }
 
-    /**
-     * Perform the move C0R0-C1R1, or pass if C0 is '-'. For moves
-     * other than pass, assumes that moveLegal(C0, R0, C1, R1).
-     */
+    /** Perform the move C0R0-C1R1, or pass if C0 is '-'.  For moves
+     *  other than pass, assumes that moveLegal(C0, R0, C1, R1). */
     void createMove(char maxnum, char r0, char maxnum2, char r1) {
         if (maxnum == '-') {
             createMove(Move.pass());
@@ -193,26 +178,20 @@ class Board {
         announce();
     }
 
-    /**
-     * Changes the color of surrounding pieces within 1
-     * by Move.
-     * 
-     * @param move The move that is used for converting
+    /** Changes the color of surrounding pieces within 1
+     *  by Move.
+     *  @param move The move that is used for converting
      *             the color around its destination.
-     * @param self The color of the player's piece.
-     */
+     *  @param self The color of the player's piece. */
     private void convertColor(Move move, PieceState self) {
         convertColor(move.toIndex(), self);
     }
 
-    /**
-     * Changes the color of surrounding pieces within 1
-     * by index.
-     * 
-     * @param index The index that is used for converting
-     *              the color.
-     * @param self  The color of the player's piece.
-     */
+    /** Changes the color of surrounding pieces within 1
+     *  by index.
+     *  @param index The index that is used for converting
+     *             the color.
+     *  @param self The color of the player's piece. */
     private void convertColor(int index, PieceState self) {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
@@ -225,10 +204,8 @@ class Board {
         }
     }
 
-    /**
-     * Update to indicate that the current player passes, assuming it
-     * is legal to do so.
-     */
+    /** Update to indicate that the current player passes, assuming it
+     *  is legal to do so.  */
     void pass() {
         assert couldMove(nextMove);
         nextMove = nextMove.opposite();
@@ -247,18 +224,17 @@ class Board {
                 && getContent(col, r) != EMPTY
                 && getContent(c, r) != EMPTY);
     }
+	
+	
 
-    // Final Project Part A.1.2 Setting a Block
+	// Final Project Part A.1.2 Setting a Block
 
-    /**
-     * Set a block on the square c r and its reflections across the middle row
-     * and/or column,
-     * if that square is unoccupied.
-     * If the square has been occupied by a piece or a block, an error will be
-     * thrown.
+    /** Set a block on the square c r and its reflections across the middle row and/or column,
+     *      if that square is unoccupied.
+	 *  If the square has been occupied by a piece or a block, an error will be thrown.
      */
     void setBlock(char c, char r) {
-
+		
         // Please do not change the following codes
         if (!blockLegal(c, r)) {
             throw error("illegal block placement");
@@ -270,29 +246,30 @@ class Board {
         // Complete the code
         // Hints: Consider using the method setContent and the variable unblockedNum
         setContent(col, row, BLOCKED);
-        setContent(col, r, BLOCKED);
+        setContent(col, r,BLOCKED);
         setContent(c, r, BLOCKED);
         setContent(c, row, BLOCKED);
-
-        if (col == c && row == r) {
+        if(col==c&&row==r){
             unblockedNum--;
-        } else if ((col == c && row != r) || (row == r && col != c)) {
-            unblockedNum = unblockedNum - 2;
-        } else {
-            unblockedNum = unblockedNum - 4;
+        }else if((col==c&&row!=r)||(row==r&&col!=c)){
+            unblockedNum=unblockedNum-2;
+        }else{
+            unblockedNum=unblockedNum-4;
         }
-
+        
         // Please do not change the following codes
         if (!couldMove(RED) && !couldMove(BLUE)) {
             winner = EMPTY;
         }
         announce();
     }
+	
 
     /** Return total number of unblocked squares. */
     int unblockedNum() {
         return unblockedNum;
     }
+
 
     @Override
     public String toString() {
@@ -312,10 +289,8 @@ class Board {
         return Arrays.hashCode(ataxxBoard);
     }
 
-    /**
-     * Return a text depiction of the board.
-     * If LEGEND, supply row and column numbers around the edges.
-     */
+    /** Return a text depiction of the board.
+     *  If LEGEND, supply row and column numbers around the edges. */
     String toString(boolean legend) {
         String sentences = "";
         for (char r = '7'; r >= '1'; r -= 1) {
@@ -352,10 +327,8 @@ class Board {
         notifier.accept(this);
     }
 
-    /**
-     * Return the color of the player who has the next move. The
-     * value is arbitrary if the getAtaxxGame is over.
-     */
+    /** Return the color of the player who has the next move.  The
+     *  value is arbitrary if the getAtaxxGame is over. */
     PieceState nextMove() {
         return nextMove;
     }
@@ -364,49 +337,43 @@ class Board {
     static int index(char col, char row) {
         return (row - '1' + 2) * DEEPER_ONESIDE + (col - 'a' + 2);
     }
+	
+	
+	// Final Project Part A.1.4 Getting the Winner
 
-    // Final Project Part A.1.4 Getting the Winner
-
-    /**
-     * The method to find the winner of the game.
-     * It also stores the result in instance variable winner.
-     * 
-     * @return null if the game is not finished.
-     * @return RED or BLUE if the game is finished and there is a winner of that
-     *         color.
-     * @return EMPTY if the game is finished but there is not winner / a tie.
-     */
+    /** The method to find the winner of the game.
+	  * It also stores the result in instance variable winner.
+	  * @return null if the game is not finished.
+	  * @return RED or BLUE if the game is finished and there is a winner of that color.
+	  * @return EMPTY if the game is finished but there is not winner / a tie.
+      */
     PieceState getWinner() {
-        // complete the code
+        // complete the code 
         // Hints: Consider using couldMove, getColorNums, getConsecJumpNums
-        // 判断游戏结束了么
-        if ((couldMove(RED) == false && couldMove(BLUE) == false) || getConsecJumpNums() >= 25 || getColorNums(RED) == 0
-                || getColorNums(BLUE) == 0) {
-            if (getColorNums(RED) > getColorNums(BLUE)) {
-                winner = RED;
-            } else {
-                winner = BLUE;
-            }
+		//判断游戏结束了么
+        if((couldMove(RED)==false&&couldMove(BLUE)==false)||getConsecJumpNums()>=25||getColorNums(RED)==0||getColorNums(BLUE)==0){
+		if(getColorNums(RED)>getColorNums(BLUE)){
+            winner=RED;
+        }else{
+            winner=BLUE;
         }
-
-        if (getColorNums(RED) == getColorNums(BLUE)) {
-            winner = EMPTY;
+        if(getColorNums(RED)==getColorNums(BLUE)){
+            winner=EMPTY;
         }
-        // Please do not change the return statement below
-        // Please do not change the return statement below
+    }
+		// Please do not change the return statement below
         return winner;
     }
+	
 
     /** Increment getColorNums(COLOR) by K. */
     private void incrColorPieces(PieceState color, int k) {
         colorNum[color.ordinal()] += k;
     }
 
-    /**
-     * The current contents of square CR, where 'a'-2 <= C <= 'g'+2, and
-     * '1'-2 <= R <= '7'+2. Squares outside the range a1-g7 are all
-     * BLOCKED. Returns the same value as getContent(index(C, R)).
-     */
+    /** The current contents of square CR, where 'a'-2 <= C <= 'g'+2, and
+     *  '1'-2 <= R <= '7'+2.  Squares outside the range a1-g7 are all
+     *  BLOCKED.  Returns the same value as getContent(index(C, R)). */
     PieceState getContent(char c, char r) {
         return ataxxBoard[index(c, r)];
     }
@@ -416,146 +383,110 @@ class Board {
         return ataxxBoard[sq];
     }
 
-    /**
-     * Set square at C R to V.
-     * This is used for changing contents of the board.
-     */
+    /** Set square at C R to V.
+     *  This is used for changing contents of the board. */
     public void setContent(char c, char r, PieceState v) {
         ataxxBoard[index(c, r)] = v;
     }
 
-    /**
-     * Set square at linearized index SQ to V.
-     * This is used for changing contents of the board.
-     */
+    /** Set square at linearized index SQ to V.
+     * This is used for changing contents of the board. */
     private void setContent(int sq, PieceState v) {
         ataxxBoard[sq] = v;
     }
 
-    /**
-     * Return total number of moves and passes since the last
-     * clear or the creation of the board.
-     */
+    /** Return total number of moves and passes since the last
+     *  clear or the creation of the board. */
     int moveNums() {
         return totalMoves.size();
     }
 
-    /**
-     * Return number of non-pass moves made in the current getAtaxxGame since the
-     * last clone move added a piece to the board (or since the
-     * start of the getAtaxxGame). Used to detect end-of-getAtaxxGame.
-     */
+    /** Return number of non-pass moves made in the current getAtaxxGame since the
+     *  last clone move added a piece to the board (or since the
+     *  start of the getAtaxxGame). Used to detect end-of-getAtaxxGame. */
     int getConsecJumpNums() {
         return consecJumpNum;
     }
 
-    // Final Project Part A.1.1 Getting the Number of Colors
 
-    /**
-     * Return number of color pieces on the board.
-     * This method will be used in the method getScore().
-     * 
-     * @param color represents the color of the piece, either RED or BLUE.
-     * @return the number of pieces having the corresponding color.
-     */
-    int getColorNums(PieceState color) {
+	// Final Project Part A.1.1 Getting the Number of Colors
+	
+    /** Return number of color pieces on the board.
+     *  This method will be used in the method getScore().
+	 *  @param color represents the color of the piece, either RED or BLUE.
+	 *  @return the number of pieces having the corresponding color.
+	 */
+    int getColorNums(PieceState color) {//
         // complete the code
-        // Have no need to consider states except RED and BLUE
-        int red = 0;
-        int blue = 0;
-
+		int red=0;
+        int blue=0;
         for (int i = 0; i < ataxxBoard.length; i++) {
-            if (getContent(i) == RED)
-                red++;
-            if (getContent(i) == BLUE)
-                blue++;
+                if(getContent(i)==RED) red++;  
+                if(getContent(i)==BLUE) blue++;
         }
-
-        if (color == RED) {
+		if(color==RED){
             return red;
-        } else {
+        }else {
             return blue;
         }
     }
 
     // Please do not change code of the following method.
-    public String getScore() {
-        return getColorNums(RED) + " red vs " + getColorNums(BLUE) + " blue";
+    public String getScore(){
+        return getColorNums(RED)+ " red vs " + getColorNums(BLUE) + " blue";
     }
 
+
     /** A notifier that does nothing. */
-    private static final Consumer<Board> NOP = (s) -> {
-    };
+    private static final Consumer<Board> NOP = (s) -> { };
 
     /** Use notifier.accept(this) to announce changes to this board. */
     private Consumer<Board> notifier;
 
-    /**
-     * For reasons of efficiency in copying the board,
-     * we use a 1D array to represent it, using the usual access
-     * algorithm: row r, column c => index(r, c).
+    /** For reasons of efficiency in copying the board,
+     *  we use a 1D array to represent it, using the usual access
+     *  algorithm: row r, column c => index(r, c).
      *
-     * Next, instead of using a 7x7 board, we use an 11x11 board in
-     * which the outer two rows and columns are blocks, and
-     * row 2, column 2 actually represents row 0, column 0
-     * of the real board. As a result of this trick, there is no
-     * need to special-case being near the edge: we don't move
-     * off the edge because it looks blocked.
+     *  Next, instead of using a 7x7 board, we use an 11x11 board in
+     *  which the outer two rows and columns are blocks, and
+     *  row 2, column 2 actually represents row 0, column 0
+     *  of the real board.  As a result of this trick, there is no
+     *  need to special-case being near the edge: we don't move
+     *  off the edge because it looks blocked.
      *
-     * Using characters as indices, it follows that if 'a' <= c <= 'g'
-     * and '1' <= r <= '7', then row r, column c of the board corresponds
-     * to ataxxBoard[(c -'a' + 2) + 11 (r - '1' + 2) ].
-     */
+     *  Using characters as indices, it follows that if 'a' <= c <= 'g'
+     *  and '1' <= r <= '7', then row r, column c of the board corresponds
+     *  to ataxxBoard[(c -'a' + 2) + 11 (r - '1' + 2) ]. */
     public PieceState[] ataxxBoard;
 
     /** Player that is next to move. */
     private PieceState nextMove;
 
-    /**
-     * Number of consecutive non-cloning moves since the
-     * last clear or the beginning of the getAtaxxGame.
-     */
+    /** Number of consecutive non-cloning moves since the
+     *  last clear or the beginning of the getAtaxxGame. */
     private int consecJumpNum;
 
     /** Total number of unblocked squares. */
     private int unblockedNum = ONESIDE * ONESIDE;
 
-    /**
-     * Number of blue and red pieces, indexed by the ordinal positions of
-     * enumerals BLUE and RED.
-     */
+    /** Number of blue and red pieces, indexed by the ordinal positions of
+     *  enumerals BLUE and RED. */
     private int[] colorNum = new int[BLUE.ordinal() + 1];
 
-    /**
-     * Set to winner when getAtaxxGame ends (EMPTY if tie). Otherwise, it is null.
-     */
+    /** Set to winner when getAtaxxGame ends (EMPTY if tie).  Otherwise, it is null. */
     private PieceState winner;
 
-    /**
-     * List of all moves since the last clear or beginning of
-     * the getAtaxxGame.
-     */
+    /** List of all moves since the last clear or beginning of
+     *  the getAtaxxGame. */
     private ArrayList<Move> totalMoves;
 
     /** Number of squares on a side of the board. */
     static final int ONESIDE = Move.ONESIDE;
 
-    /**
-     * Length of a side + an artificial 2-deep border region.
-     * This is unrelated to a move that is a "clone".
-     */
+    /** Length of a side + an artificial 2-deep border region.
+     * This is unrelated to a move that is a "clone". */
     static final int DEEPER_ONESIDE = Move.DEEPER_ONESIDE;
 
     /** Number of consecutive non-cloning moves before getAtaxxGame ends. */
     static final int CONSEC_JUMP_LIMIT = 25;
-
-    // For GUI
-    public PieceState get(int row, int col) {
-        int index = row * DEEPER_ONESIDE + col;
-        if (row >= 0 && row < DEEPER_ONESIDE && col >= 0 && col < DEEPER_ONESIDE) {
-            return ataxxBoard[index];
-        } else {
-            throw new IllegalArgumentException("Invalid row or column index.");
-        }
-    }
 }
