@@ -51,11 +51,15 @@ class AIPlayer extends Player {
         // Therefore, the following codes should be modified
         // in order to meet with the requirements of Part A.2.
         // You can create add your own method and put your method here.
+
+        // Different possible moves for different colors, sense = 1
+        // for red, sense = -1 for blue
         if (getMyState() == PieceState.RED) {
             minMax(b, MAX_DEPTH, true, 1, -INFTY, INFTY);
         } else {
             minMax(b, MAX_DEPTH, true, -1, -INFTY, INFTY);
         }
+
         // Please do not change the codes below
         if (lastFoundMove == null) {
             lastFoundMove = Move.pass();
@@ -66,79 +70,83 @@ class AIPlayer extends Player {
     /** The move found by the last call to the findMove method above. */
     private Move lastFoundMove;
 
-    /** Find a move from position BOARD and return its value, recording
-     *  the move found in _foundMove iff SAVEMOVE. The move
-     *  should have maximal value or have value > BETA if SENSE==1,
-     *  and minimal value or value < ALPHA if SENSE==-1. Searches up to
-     *  DEPTH levels.  Searching at level 0 simply returns a static estimate
-     *  of the board value and does not set _foundMove. If the game is over
-     *  on BOARD, does not set _foundMove. */
+    /**
+     * Find a move from position BOARD and return its value, recording
+     * the move found in _foundMove iff SAVEMOVE. The move
+     * should have maximal value or have value > BETA if SENSE==1,
+     * and minimal value or value < ALPHA if SENSE==-1. Searches up to
+     * DEPTH levels. Searching at level 0 simply returns a static estimate
+     * of the board value and does not set _foundMove. If the game is over
+     * on BOARD, does not set _foundMove.
+     */
     // private int minMax(Board board, int depth, boolean saveMove, int sense,
-    //                    int alpha, int beta) {
-    //     /* We use WINNING_VALUE + depth as the winning value so as to favor
-    //      * wins that happen sooner rather than later (depth is larger the
-    //      * fewer moves have been made. */
-    //     if (depth == 0 || board.getWinner() != null) {
-    //         return staticScore(board, WINNING_VALUE + depth);
-    //     }
-    //     Move best;
-    //     best = null;
-    //     int bestScore = 0;
-    //     ArrayList<Move> allPossibleMoves = new ArrayList<>();
-    //     if (sense == 1) {
-    //         if (board.moveLegal(Move.pass())) {
-    //             allPossibleMoves.add(Move.pass());
-    //         } else {
-    //             bestScore = -INFTY;
-    //             allPossibleMoves = possibleMoves(board,PieceState.RED);
-    //             for (Move possible : allPossibleMoves) {
-    //                 Board copy = new Board(board);
-    //                 copy.createMove(possible);
-    //                 int response = minMax(copy, depth - 1, false,
-    //                         -1, alpha, beta);
-    //                 if (response > bestScore) {
-    //                     best = possible;
-    //                     bestScore = response;
-    //                     alpha = max(alpha, bestScore);
-    //                     if (alpha >= beta) {
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     } else if (sense == -1) {
-    //         if (board.moveLegal(Move.pass())) {
-    //             allPossibleMoves.add(Move.pass());
-    //         } else {
-    //             bestScore = INFTY;
-    //             allPossibleMoves = possibleMoves(board,PieceState.BLUE);
-    //             for (Move possible : allPossibleMoves) {
-    //                 Board copy = new Board(board);
-    //                 copy.createMove(possible);
-    //                 int response = minMax(copy, depth - 1, false,
-    //                         1, alpha, beta);
-    //                 if (response < bestScore) {
-    //                     bestScore = response;
-    //                     best = possible;
-    //                     beta = min(beta, bestScore);
-    //                     if (alpha >= beta) {
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     if (saveMove) {
-    //         lastFoundMove = best;
-    //     }
-    //     return bestScore;
+    // int alpha, int beta) {
+    // /* We use WINNING_VALUE + depth as the winning value so as to favor
+    // * wins that happen sooner rather than later (depth is larger the
+    // * fewer moves have been made. */
+    // if (depth == 0 || board.getWinner() != null) {
+    // return staticScore(board, WINNING_VALUE + depth);
+    // }
+    // Move best;
+    // best = null;
+    // int bestScore = 0;
+    // ArrayList<Move> allPossibleMoves = new ArrayList<>();
+    // if (sense == 1) {
+    // if (board.moveLegal(Move.pass())) {
+    // allPossibleMoves.add(Move.pass());
+    // } else {
+    // bestScore = -INFTY;
+    // allPossibleMoves = possibleMoves(board,PieceState.RED);
+    // for (Move possible : allPossibleMoves) {
+    // Board copy = new Board(board);
+    // copy.createMove(possible);
+    // int response = minMax(copy, depth - 1, false,
+    // -1, alpha, beta);
+    // if (response > bestScore) {
+    // best = possible;
+    // bestScore = response;
+    // alpha = max(alpha, bestScore);
+    // if (alpha >= beta) {
+    // break;
+    // }
+    // }
+    // }
+    // }
+    // } else if (sense == -1) {
+    // if (board.moveLegal(Move.pass())) {
+    // allPossibleMoves.add(Move.pass());
+    // } else {
+    // bestScore = INFTY;
+    // allPossibleMoves = possibleMoves(board,PieceState.BLUE);
+    // for (Move possible : allPossibleMoves) {
+    // Board copy = new Board(board);
+    // copy.createMove(possible);
+    // int response = minMax(copy, depth - 1, false,
+    // 1, alpha, beta);
+    // if (response < bestScore) {
+    // bestScore = response;
+    // best = possible;
+    // beta = min(beta, bestScore);
+    // if (alpha >= beta) {
+    // break;
+    // }
+    // }
+    // }
+    // }
+    // }
+    // if (saveMove) {
+    // lastFoundMove = best;
+    // }
+    // return bestScore;
     // }
     // Test
     private int minMax(Board board, int depth, boolean saveMove, int sense,
-                       int alpha, int beta) {
-        /* We use WINNING_VALUE + depth as the winning value so as to favor
+            int alpha, int beta) {
+        /*
+         * We use WINNING_VALUE + depth as the winning value so as to favor
          * wins that happen sooner rather than later (depth is larger the
-         * fewer moves have been made. */
+         * fewer moves have been made.
+         */
         if (depth == 0 || board.getWinner() != null) {
             return staticScore(board, WINNING_VALUE + depth);
         }
@@ -148,48 +156,48 @@ class AIPlayer extends Player {
         ArrayList<Move> allPossibleMoves = new ArrayList<>();
         if (sense == 1) {
             bestScore = -INFTY;
-                allPossibleMoves = possibleMoves(board,PieceState.RED);
-                for (Move possible : allPossibleMoves) {
-                    Board copy = new Board(board);
-                    copy.createMove(possible);
-                    int response = minMax(copy, depth - 1, false,
-                            -1, alpha, beta);
-                    if (response > bestScore) {
-                        best = possible;
-                        bestScore = response;
-                        alpha = max(alpha, bestScore);
-                        if (alpha >= beta) {
-                            break;
-                        }
+            allPossibleMoves = possibleMoves(board, PieceState.RED);
+            for (Move possible : allPossibleMoves) {
+                Board copy = new Board(board);
+                copy.createMove(possible);
+                int response = minMax(copy, depth - 1, false,
+                        -1, alpha, beta);
+                if (response > bestScore) {
+                    best = possible;
+                    bestScore = response;
+                    alpha = max(alpha, bestScore);
+                    if (alpha >= beta) {
+                        break;
                     }
                 }
-                if (allPossibleMoves.size() == 0) {
-                    if (board.moveLegal(Move.pass())) {
-                        allPossibleMoves.add(Move.pass());
-                    }
-                }
+            }
+            if (allPossibleMoves.size() == 0) {
+                // if (board.moveLegal(Move.pass())) {
+                allPossibleMoves.add(Move.pass());
+                // }
+            }
         } else if (sense == -1) {
             bestScore = INFTY;
-                allPossibleMoves = possibleMoves(board,PieceState.BLUE);
-                for (Move possible : allPossibleMoves) {
-                    Board copy = new Board(board);
-                    copy.createMove(possible);
-                    int response = minMax(copy, depth - 1, false,
-                            1, alpha, beta);
-                    if (response < bestScore) {
-                        bestScore = response;
-                        best = possible;
-                        beta = min(beta, bestScore);
-                        if (alpha >= beta) {
-                            break;
-                        }
+            allPossibleMoves = possibleMoves(board, PieceState.BLUE);
+            for (Move possible : allPossibleMoves) {
+                Board copy = new Board(board);
+                copy.createMove(possible);
+                int response = minMax(copy, depth - 1, false,
+                        1, alpha, beta);
+                if (response < bestScore) {
+                    bestScore = response;
+                    best = possible;
+                    beta = min(beta, bestScore);
+                    if (alpha >= beta) {
+                        break;
                     }
                 }
-                if (allPossibleMoves.size() == 0) {
-                    if (board.moveLegal(Move.pass())) {
-                        allPossibleMoves.add(Move.pass());
-                    }
-                }
+            }
+            if (allPossibleMoves.size() == 0) {
+                // if (board.moveLegal(Move.pass())) {
+                allPossibleMoves.add(Move.pass());
+                // }
+            }
         }
         if (saveMove) {
             lastFoundMove = best;
