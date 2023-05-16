@@ -13,7 +13,7 @@ import static java.lang.Math.max;
 class AIPlayer extends Player {
 
     /** Maximum minimax search depth before going to static evaluation. */
-    private static final int MAX_DEPTH = 6;
+    private static final int MAX_DEPTH = 5;
     /**
      * A position magnitude indicating a win (for red if positive, blue
      * if negative).
@@ -166,14 +166,26 @@ class AIPlayer extends Player {
         int bestScore = 0;
 
         ArrayList<Move> allPossibleMoves = new ArrayList<>();
+
+        // Different possible moves for different colors, sense = 1 for red, sense = -1 for blue
         if (sense == 1) {
-            bestScore = -INFTY;
+            // The move with the highest sbestScore will be chosen
+            bestScore = -INFTY; // -INFTY is the smallest int value
+
+            // Get all possible moves for red
             allPossibleMoves = possibleMoves(board, PieceState.RED);
+
+            // For each possible move
             for (Move possible : allPossibleMoves) {
+
+                // Create a copy of the board and then create a move
                 Board copy = new Board(board);
                 copy.createMove(possible);
+
+                // Recursively call minMax to get the bestScore
                 int response = minMax(copy, depth - 1, false,
                         -1, alpha, beta);
+                        
                 if (response > bestScore) {
                     best = possible;
                     bestScore = response;
@@ -245,10 +257,17 @@ class AIPlayer extends Player {
      * @return an ArrayList of all possible moves for the specified color.
      */
     private ArrayList<Move> possibleMoves(Board board, PieceState myColor) {
+
         ArrayList<Move> possibleMoves = new ArrayList<>();
+
         for (char row = '7'; row >= '1'; row--) {
+
             for (char col = 'a'; col <= 'g'; col++) {
+
                 int index = Board.index(col, row);
+
+                // Judge whether this index is myColor
+                // If it is, then add all possible moves for this index
                 if (board.getContent(index) == myColor) {
                     ArrayList<Move> addMoves = assistPossibleMoves(board, row, col);
                     possibleMoves.addAll(addMoves);
@@ -262,20 +281,36 @@ class AIPlayer extends Player {
      * Returns an Arraylist of legal moves.
      * 
      * @param board the board for testing
-     * @param row   the row coordinate of the center
-     * @param col   the col coordinate of the center
+     * @param row   the row coordinate of the myColor index
+     * @param col   the col coordinate of the myColor index
      */
     private ArrayList<Move> assistPossibleMoves(Board board, char row, char col) {
+
         ArrayList<Move> assistPossibleMoves = new ArrayList<>();
+
+        // Get a specific index of chess pieces through these two for loops (row and col)
         for (int i = -2; i <= 2; i++) {
             for (int j = -2; j <= 2; j++) {
+
                 if (i != 0 || j != 0) {
                     char row2 = (char) (row + j);
                     char col2 = (char) (col + i);
                     Move currMove = Move.move(col, row, col2, row2);
-                    if (board.moveLegal(currMove)) {
+
+                    Boolean isMove = false;
+
+                    try {
+                        isMove = board.moveLegal(currMove);
+                    } catch (GameException e) {
+                        isMove = false;
+                    }
+                    if (isMove) {
                         assistPossibleMoves.add(currMove);
                     }
+
+                    // if (board.moveLegal(currMove)) {
+                    //     assistPossibleMoves.add(currMove);
+                    // }
                 }
             }
         }

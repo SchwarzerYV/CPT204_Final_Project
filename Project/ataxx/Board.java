@@ -125,6 +125,7 @@ class Board {
                     throw error("illegal pass: you could jump or clone");
                 }
                 return (!couldMove(nextMove())) && couldMove(nextMove().opposite());
+                
             } else if (move.col1() < 'a'
                     || move.col1() > 'g'
                     || move.row1() < '1'
@@ -147,9 +148,12 @@ class Board {
     boolean couldMove(PieceState who) {
         for (char r = '7'; r >= '1'; r--) {
             for (char c = 'a'; c <= 'g'; c++) {
+
                 if (getContent(c, r) == who) {
+
                     for (int i = -2; i <= 2; i++) {
                         for (int j = -2; j <= 2; j++) {
+                            
                             if (i != 0 || j != 0) {
                                 char c2 = (char) (c + i);
                                 char r2 = (char) (r + j);
