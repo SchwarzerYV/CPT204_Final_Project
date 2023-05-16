@@ -140,6 +140,16 @@ class AIPlayer extends Player {
     // return bestScore;
     // }
     // Test
+    /**
+     * Find a move from position BOARD and return its value, recording
+     * @param board
+     * @param depth
+     * @param saveMove
+     * @param sense
+     * @param alpha
+     * @param beta
+     * @return
+     */
     private int minMax(Board board, int depth, boolean saveMove, int sense,
             int alpha, int beta) {
         /*
@@ -150,9 +160,11 @@ class AIPlayer extends Player {
         if (depth == 0 || board.getWinner() != null) {
             return staticScore(board, WINNING_VALUE + depth);
         }
+
         Move best;
         best = null;
         int bestScore = 0;
+
         ArrayList<Move> allPossibleMoves = new ArrayList<>();
         if (sense == 1) {
             bestScore = -INFTY;
@@ -171,11 +183,11 @@ class AIPlayer extends Player {
                     }
                 }
             }
-            if (allPossibleMoves.size() == 0) {
-                // if (board.moveLegal(Move.pass())) {
-                allPossibleMoves.add(Move.pass());
-                // }
-            }
+            // if (allPossibleMoves.size() == 0) {
+            //     // if (board.moveLegal(Move.pass())) {
+            //     allPossibleMoves.add(Move.pass());
+            //     // }
+            // }
         } else if (sense == -1) {
             bestScore = INFTY;
             allPossibleMoves = possibleMoves(board, PieceState.BLUE);
@@ -193,11 +205,11 @@ class AIPlayer extends Player {
                     }
                 }
             }
-            if (allPossibleMoves.size() == 0) {
-                // if (board.moveLegal(Move.pass())) {
-                allPossibleMoves.add(Move.pass());
-                // }
-            }
+            // if (allPossibleMoves.size() == 0) {
+            //     // if (board.moveLegal(Move.pass())) {
+            //     allPossibleMoves.add(Move.pass());
+            //     // }
+            // }
         }
         if (saveMove) {
             lastFoundMove = best;

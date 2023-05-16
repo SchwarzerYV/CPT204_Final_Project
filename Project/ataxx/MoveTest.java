@@ -31,5 +31,11 @@ public class MoveTest {
         assertEquals(Boolean.valueOf("false"), Move.isJump("b2","b5"));
     }
 
+    @Test
+    public void testIsOutside(){
+        assertEquals(Boolean.valueOf("false"), Move.isJump("c4","d3"));
+        assertEquals(Boolean.valueOf("false"), Move.isJump("b2","b5"));
+    }
+
 
 }
