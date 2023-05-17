@@ -13,7 +13,7 @@ import static java.lang.Math.max;
 class AIPlayer extends Player {
 
     /** Maximum minimax search depth before going to static evaluation. */
-    private static final int MAX_DEPTH = 5;
+    private static final int MAX_DEPTH = 6;
     /**
      * A position magnitude indicating a win (for red if positive, blue
      * if negative).
@@ -142,6 +142,7 @@ class AIPlayer extends Player {
     // Test
     /**
      * Find a move from position BOARD and return its value, recording
+     * 
      * @param board
      * @param depth
      * @param saveMove
@@ -167,61 +168,76 @@ class AIPlayer extends Player {
 
         ArrayList<Move> allPossibleMoves = new ArrayList<>();
 
-        // Different possible moves for different colors, sense = 1 for red, sense = -1 for blue
+        // judge whether the PASS step is legal
+        Boolean if_move = false;
+        try {
+            if_move = board.moveLegal(Move.pass());
+        } catch (GameException e) {
+            if_move = false;
+        }
+
+        // Different possible moves for different colors, sense = 1 for red, sense = -1
+        // for blue
         if (sense == 1) {
-            // The move with the highest sbestScore will be chosen
-            bestScore = -INFTY; // -INFTY is the smallest int value
 
-            // Get all possible moves for red
-            allPossibleMoves = possibleMoves(board, PieceState.RED);
+            if (!if_move) {
+                // The move with the highest sbestScore will be chosen
+                bestScore = -INFTY; // -INFTY is the smallest int value
 
-            // For each possible move
-            for (Move possible : allPossibleMoves) {
+                // Get all possible moves for red
+                allPossibleMoves = possibleMoves(board, PieceState.RED);
 
-                // Create a copy of the board and then create a move
-                Board copy = new Board(board);
-                copy.createMove(possible);
+                // For each possible move
+                for (Move possible : allPossibleMoves) {
 
-                // Recursively call minMax to get the bestScore
-                int response = minMax(copy, depth - 1, false,
-                        -1, alpha, beta);
-                        
-                if (response > bestScore) {
-                    best = possible;
-                    bestScore = response;
-                    alpha = max(alpha, bestScore);
-                    if (alpha >= beta) {
-                        break;
+                    // Create a copy of the board and then create a move
+                    Board copy = new Board(board);
+                    copy.createMove(possible);
+
+                    // Recursively call minMax to get the bestScore
+                    int response = minMax(copy, depth - 1, false,
+                            -1, alpha, beta);
+
+                    if (response > bestScore) {
+                        best = possible;
+                        bestScore = response;
+                        alpha = max(alpha, bestScore);
+                        if (alpha >= beta) {
+                            break;
+                        }
                     }
                 }
+            } else {
+                // if (board.moveLegal(Move.pass())) {
+                allPossibleMoves.add(Move.pass());
+                // }
             }
-            // if (allPossibleMoves.size() == 0) {
-            //     // if (board.moveLegal(Move.pass())) {
-            //     allPossibleMoves.add(Move.pass());
-            //     // }
-            // }
         } else if (sense == -1) {
-            bestScore = INFTY;
-            allPossibleMoves = possibleMoves(board, PieceState.BLUE);
-            for (Move possible : allPossibleMoves) {
-                Board copy = new Board(board);
-                copy.createMove(possible);
-                int response = minMax(copy, depth - 1, false,
-                        1, alpha, beta);
-                if (response < bestScore) {
-                    bestScore = response;
-                    best = possible;
-                    beta = min(beta, bestScore);
-                    if (alpha >= beta) {
-                        break;
+            if (!if_move) {
+                bestScore = INFTY;
+                allPossibleMoves = possibleMoves(board, PieceState.BLUE);
+                for (Move possible : allPossibleMoves) {
+                    Board copy = new Board(board);
+                    copy.createMove(possible);
+                    int response = minMax(copy, depth - 1, false,
+                            1, alpha, beta);
+                    if (response < bestScore) {
+                        bestScore = response;
+                        best = possible;
+                        beta = min(beta, bestScore);
+                        if (alpha >= beta) {
+                            break;
+                        }
                     }
                 }
+            } else {
+                //
+                // if (allPossibleMoves.size() == 0) {
+                //     if (board.moveLegal(Move.pass())) {
+                    allPossibleMoves.add(Move.pass());
+                    // }
+                //}
             }
-            // if (allPossibleMoves.size() == 0) {
-            //     // if (board.moveLegal(Move.pass())) {
-            //     allPossibleMoves.add(Move.pass());
-            //     // }
-            // }
         }
         if (saveMove) {
             lastFoundMove = best;
@@ -288,7 +304,8 @@ class AIPlayer extends Player {
 
         ArrayList<Move> assistPossibleMoves = new ArrayList<>();
 
-        // Get a specific index of chess pieces through these two for loops (row and col)
+        // Get a specific index of chess pieces through these two for loops (row and
+        // col)
         for (int i = -2; i <= 2; i++) {
             for (int j = -2; j <= 2; j++) {
 
@@ -309,7 +326,7 @@ class AIPlayer extends Player {
                     }
 
                     // if (board.moveLegal(currMove)) {
-                    //     assistPossibleMoves.add(currMove);
+                    // assistPossibleMoves.add(currMove);
                     // }
                 }
             }
