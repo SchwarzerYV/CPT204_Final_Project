@@ -13,7 +13,7 @@ import static java.lang.Math.max;
 class AIPlayer extends Player {
 
     /** Maximum minimax search depth before going to static evaluation. */
-    private static final int MAX_DEPTH = 6;
+    private static final int MAX_DEPTH = 5;
     /**
      * A position magnitude indicating a win (for red if positive, blue
      * if negative).
@@ -43,6 +43,11 @@ class AIPlayer extends Player {
         return move.toString();
     }
 
+    // TODO
+    /**
+     * 
+     * @return
+     */
     private Move findMove() {
         Board b = new Board(getAtaxxBoard());
         lastFoundMove = null;
@@ -139,7 +144,8 @@ class AIPlayer extends Player {
     // }
     // return bestScore;
     // }
-    // Test
+
+    // TODO
     /**
      * Find a move from position BOARD and return its value, recording
      * 
@@ -293,6 +299,7 @@ class AIPlayer extends Player {
         return possibleMoves;
     }
 
+    // TODO
     /**
      * Returns an Arraylist of legal moves.
      * 

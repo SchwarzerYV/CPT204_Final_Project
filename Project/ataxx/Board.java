@@ -410,7 +410,7 @@ class Board {
     PieceState getWinner() {
         // complete the code
         // Hints: Consider using couldMove, getColorNums, getConsecJumpNums
-        // 判断游戏结束了么
+        // Judge whether the game is over
         if ((couldMove(RED) == false && couldMove(BLUE) == false) || getConsecJumpNums() >= 25 || getColorNums(RED) == 0
                 || getColorNums(BLUE) == 0) {
             if (getColorNums(RED) > getColorNums(BLUE)) {
