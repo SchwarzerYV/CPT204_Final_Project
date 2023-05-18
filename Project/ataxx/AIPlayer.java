@@ -13,7 +13,7 @@ import static java.lang.Math.max;
 class AIPlayer extends Player {
 
     /** Maximum minimax search depth before going to static evaluation. */
-    private static final int MAX_DEPTH = 5;
+    private static final int MAX_DEPTH = 4;
     /**
      * A position magnitude indicating a win (for red if positive, blue
      * if negative).
@@ -45,8 +45,9 @@ class AIPlayer extends Player {
 
     // TODO
     /**
-     * 
-     * @return
+     * To find the legal move position for next step
+     *
+     * @return lastFoundMove, which is the last possible move
      */
     private Move findMove() {
         Board b = new Board(getAtaxxBoard());
@@ -149,13 +150,13 @@ class AIPlayer extends Player {
     /**
      * Find a move from position BOARD and return its value, recording
      * 
-     * @param board
-     * @param depth
-     * @param saveMove
-     * @param sense
-     * @param alpha
-     * @param beta
-     * @return
+     * @param board The created board
+     * @param depth Number of AI prediction
+     * @param saveMove Judge the step is of player self or the opponent
+     * @param sense Decide the color is RED or BLUE
+     * @param alpha Parameter for pruning
+     * @param beta Parameter for pruning
+     * @return bestScore, to find the best choice
      */
     private int minMax(Board board, int depth, boolean saveMove, int sense,
             int alpha, int beta) {

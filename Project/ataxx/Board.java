@@ -487,7 +487,7 @@ class Board {
      * @param color represents the color of the piece, either RED or BLUE.
      * @return the number of pieces having the corresponding color.
      */
-    int getColorNums(PieceState color) {//
+    int getColorNums(PieceState color) {
         // complete the code
         int red = 0;
         int blue = 0;
